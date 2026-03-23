@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Modal Creativo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    ul.nav {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    ul.nav li a {
+      text-decoration: none;
+      color: #fff;
+      background: #ff6f61;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: transform 0.2s;
+    }
+
+    ul.nav li a:hover {
+      transform: scale(1.1);
+      background: #ff3b2e;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #222;
+      text-shadow: 1px 1px 2px #fff;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #6a82fb;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #fc5c7d;
+      transform: rotate(-2deg) scale(1.05);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInBg 0.4s ease-in-out;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-box {
+      background: #fff;
+      width: 90%;
+      max-width: 420px;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      position: relative;
+      animation: popUp 0.4s ease-in-out;
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+      to { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #ff6f61;
+      transition: transform 0.2s;
+    }
+
+    .modal-close:hover {
+      transform: rotate(90deg);
+    }
+
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 12px 0;
+      border: 2px solid #6a82fb;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #fc5c7d;
+    }
+
+    #messages {
+      margin-top: 15px;
+      padding-left: 20px;
+    }
+
+    #messages li {
+      background: #ffeaa7;
+      margin-bottom: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <ul class="nav">
+    <li><a href="index.html">Counter Básico</a></li>
+    <li><a href="Event.html">Event Listener</a></li>
+    <li><a href="To-do_list.html">Adventure Tasks</a></li>
+    <li><a href="Modal.html">Modal Popup</a></li>
+    <li><a href="Form.html">Form Validation</a></li>
+  </ul>
+
+  <h1>🚀 Proyecto JavaScript</h1>
+  <h2>🎨 Smart Modal Creativo</h2>
+
+  <div style="text-align:center;">
+    <button id="openBtn">✨ Abrir Modal ✨</button>
+  </div>
+
+  <h3>📜 Mensajes guardados:</h3>
+  <button id="clearBtn">🗑️ Borrar todos</button>
+  <ul id="messages"></ul>
+
+  <div id="modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button id="closeBtn" class="modal-close" aria-label="Cerrar modal">×</button>
+      <h3 id="modalTitle">💬 Escribe algo mágico</h3>
+      <input id="inputText" placeholder="Escribe un mensaje creativo...">
+      <button id="saveBtn">Guardar ✨</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("modal");
+    const openBtn = document.getElementById("openBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const input = document.getElementById("inputText");
+    const list = document.getElementById("messages");
+    const clearBtn = document.getElementById("clearBtn");
+
+    let messages = [];
+
+    openBtn.addEventListener("click", () => {
+      modal.classList.add("show");
+      input.focus();
+    });
+
+    closeBtn.addEventListener("click", () => {
+      modal.classList.remove("show");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("show");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        modal.classList.remove("show");
+      }
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const text = input.value.trim();
+      if (!text) return;
+
+      messages.push("✨ " + text + " ✨");
+      renderMessages();
+      input.value = "";
+      input.focus();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      messages = [];
+      renderMessages();
+    });
+
+    function renderMessages() {
+      list.innerHTML = "";
+      messages.forEach(msg => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <ul>
+    <li><a href="index.html"> Counter Básico</a></li>
+    <li><a href="Event.html">Event Listener</a></li>
+    <li><a href="To-do_list.html"> Adventure Tasks</a></li>
+    <li><a href="Modal.html">Modal Popup</a></li>
+    <li><a href="Form.html">Form Validation</a></li>
+  </ul>
+<h1>📊 Control Counter</h1>
+<h2 id="status">Estado: Bajo</h2>
+
+<p id="count" style="font-size:40px;">0</p>
+
+<!-- Barra de progreso -->
+<div style="width:200px; border:1px solid black;">
+  <div id="bar" style="height:20px; width:0%; background-color:green;"></div>
+</div>
+
+<br>
+
+<button id="btnPlus">+1</button>
+<button id="btnPlus5">+5</button>
+<button id="btnMinus">-1</button>
+<button id="btnReset">Reset</button>
+
+<p id="warning"></p>
+
+<script>
+
+// Eventos
+document.getElementById("btnPlus").addEventListener("click", increaseCount);
+document.getElementById("btnPlus5").addEventListener("click", addFive);
+document.getElementById("btnMinus").addEventListener("click", decreaseCount);
+document.getElementById("btnReset").addEventListener("click", resetCount);
+
+// Variable
+let count = 0;
+
+// Cargar al iniciar
+loadCount();
+
+// Actualizar interfaz
+function updateCount() {
+  let countEl = document.getElementById("count");
+  let statusEl = document.getElementById("status");
+  let bar = document.getElementById("bar");
+  let warning = document.getElementById("warning");
+
+  countEl.innerHTML = count;
+
+  // 📊 Estado
+  if (count < 30) {
+    statusEl.innerHTML = "Estado: Bajo";
+  } else if (count < 70) {
+    statusEl.innerHTML = "Estado: Medio";
+  } else {
+    statusEl.innerHTML = "Estado: Alto";
+  }
+
+  // 📈 Barra de progreso
+  let percent = count;
+  if (percent > 100) percent = 100;
+
+  bar.style.width = percent + "%";
+
+  // Cambiar color de barra
+  if (percent < 30) {
+    bar.style.backgroundColor = "green";
+  } else if (percent < 70) {
+    bar.style.backgroundColor = "orange";
+  } else {
+    bar.style.backgroundColor = "red";
+  }
+
+  // ⚠️ Advertencia
+  if (count >= 90) {
+    warning.innerHTML = "⚠️ Casi llegas al límite!";
+  } else {
+    warning.innerHTML = "";
+  }
+
+  saveCount(); // 💾 auto guardar
+}
+
+// ➕ +1
+function increaseCount() {
+  if (count < 100) {
+    count++;
+    updateCount();
+  }
+}
+
+// ➕ +5
+function addFive() {
+  if (count + 5 <= 100) {
+    count += 5;
+  } else {
+    count = 100;
+  }
+  updateCount();
+}
+
+// ➖ -1
+function decreaseCount() {
+  if (count > 0) {
+    count--;
+    updateCount();
+  }
+}
+
+// 🔁 Reset
+function resetCount() {
+  count = 0;
+  updateCount();
+}
+
+// 💾 Guardar
+function saveCount() {
+  localStorage.setItem("count2", count);
+}
+
+// 📂 Cargar
+function loadCount() {
+  let saved = localStorage.getItem("count2");
+  if (saved !== null) {
+    count = Number(saved);
+  }
+  updateCount();
+}
+
+</script>
+
+</body>
+</html>

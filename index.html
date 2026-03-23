@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <ul>
+    <li><a href="index.html"> Counter Básico</a></li>
+    <li><a href="Event.html">Event Listener</a></li>
+    <li><a href="To-do_list.html"> Adventure Tasks</a></li>
+    <li><a href="Modal.html">Modal Popup</a></li>
+    <li><a href="Form.html">Form Validation</a></li>
+  </ul>
+<h1>🔥 Smart Counter</h1>
+<h2 id="message">Empieza a contar 😄</h2>
+
+<p id="count" style="font-size:50px;">0</p>
+<p id="emoji" style="font-size:40px;">😐</p>
+
+<button onclick="increaseCount()">+1</button>
+<button onclick="decreaseCount()">-1</button>
+<button onclick="addTen()">+10</button>
+<button onclick="doubleCount()">x2</button>
+<button onclick="resetCount()">Reset</button>
+<button onclick="clearHistory()">🧹 Borrar Historial</button>
+
+<h3>📜 Historial</h3>
+<ul id="history"></ul>
+
+<script>
+let count = 0;
+
+// Actualizar todo
+function updateCount() {
+  let element = document.getElementById("count");
+  let message = document.getElementById("message");
+  let emoji = document.getElementById("emoji");
+
+  element.innerHTML = count;
+
+  // 🎨 Colores cada 10
+  let group = Math.floor(count / 10);
+  let colors = ["red", "blue", "green", "orange", "purple"];
+  element.style.color = colors[group % colors.length];
+
+  // 😄 Emojis y niveles
+  if (count < 10) {
+    emoji.innerHTML = "😐";
+    message.innerHTML = "Nivel bajo...";
+  } else if (count < 30) {
+    emoji.innerHTML = "🙂";
+    message.innerHTML = "Vas bien 👍";
+  } else if (count < 60) {
+    emoji.innerHTML = "😎";
+    message.innerHTML = "Pro en progreso 🚀";
+  } else if (count < 100) {
+    emoji.innerHTML = "🔥";
+    message.innerHTML = "Imparable!";
+  } else {
+    emoji.innerHTML = "👑";
+    message.innerHTML = "LEYENDA 🏆";
+  }
+}
+
+// 📜 Agregar al historial
+function addHistory(action) {
+  let list = document.getElementById("history");
+  let item = document.createElement("li");
+  item.innerHTML = action + " → " + count;
+  list.appendChild(item);
+}
+
+// ➕ +1
+function increaseCount() {
+  count++;
+  updateCount();
+  addHistory("+1");
+}
+
+// ➖ -1
+function decreaseCount() {
+  if (count > 0) {
+    count--;
+    updateCount();
+    addHistory("-1");
+  }
+}
+
+// ➕ +10
+function addTen() {
+  count += 10;
+  updateCount();
+  addHistory("+10");
+}
+
+// ✖️ x2
+function doubleCount() {
+  count *= 2;
+  updateCount();
+  addHistory("x2");
+}
+
+// 🔁 Reset
+function resetCount() {
+  count = 0;
+  updateCount();
+  addHistory("Reset");
+}
+
+// 🧹 Borrar historial
+function clearHistory() {
+  let list = document.getElementById("history");
+  list.innerHTML = "";
+
+  // Mensaje opcional
+  let item = document.createElement("li");
+  item.innerHTML = "🧹 Historial borrado";
+  list.appendChild(item);
+}
+
+// Inicializar
+updateCount();
+
+</script>
+
+</body>
+</html>

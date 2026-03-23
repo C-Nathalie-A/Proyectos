@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <ul>
+    <li><a href="index.html"> Counter Básico</a></li>
+    <li><a href="Event.html">Event Listener</a></li>
+    <li><a href="To-do_list.html"> Adventure Tasks</a></li>
+    <li><a href="Modal.html">Modal Popup</a></li>
+    <li><a href="Form.html">Form Validation</a></li>
+  </ul>
+<h1>🎮 Mission List</h1>
+<h2 id="level">Nivel 1</h2>
+<p id="points">Puntos: 0</p>
+<p id="streak">Racha: 0 🔥</p>
+
+<input id="task" placeholder="Nueva misión">
+<button onclick="addTask()">Añadir</button>
+<button onclick="randomTask()">🎲 Misión Random</button>
+
+<ul id="list"></ul>
+
+<button onclick="clearAll()">🧹 Limpiar Todo</button>
+
+<script>
+
+// 📦 Datos
+let tasks = [];
+let points = 0;
+let streak = 0;
+
+// Cargar datos
+loadData();
+
+// ➕ Añadir misión
+function addTask() {
+  let input = document.getElementById("task");
+  let text = input.value.trim();
+
+  if (text === "") {
+    alert("Escribe una misión!");
+    return;
+  }
+
+  tasks.push({ text: text, done: false });
+  input.value = "";
+
+  render();
+  saveData();
+}
+
+// 🎲 Misión aleatoria
+function randomTask() {
+  let ideas = [
+    "Hacer ejercicio 💪",
+    "Leer 10 páginas 📖",
+    "Beber agua 💧",
+    "Organizar escritorio 🧹",
+    "Aprender algo nuevo 🧠"
+  ];
+
+  let random = ideas[Math.floor(Math.random() * ideas.length)];
+
+  tasks.push({ text: random, done: false });
+
+  render();
+  saveData();
+}
+
+// 🎨 Renderizar
+function render() {
+  let list = document.getElementById("list");
+  let level = document.getElementById("level");
+  let pointsEl = document.getElementById("points");
+  let streakEl = document.getElementById("streak");
+
+  list.innerHTML = "";
+
+  tasks.forEach((task, index) => {
+    let li = document.createElement("li");
+
+    let span = document.createElement("span");
+    span.innerHTML = task.done ? "✅ " + task.text : "⬜ " + task.text;
+
+    span.onclick = function () {
+      toggleTask(index);
+    };
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "❌";
+    btn.onclick = function () {
+      deleteTask(index);
+    };
+
+    li.appendChild(span);
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  // 🏆 Nivel
+  let levelNum = Math.floor(points / 50) + 1;
+  level.innerHTML = "Nivel " + levelNum;
+
+  pointsEl.innerHTML = "Puntos: " + points;
+  streakEl.innerHTML = "Racha: " + streak + " 🔥";
+}
+
+// ✅ Completar misión
+function toggleTask(index) {
+  if (!tasks[index].done) {
+    tasks[index].done = true;
+
+    points += 10;
+    streak++;
+  } else {
+    tasks[index].done = false;
+
+    points -= 10;
+    streak = 0;
+  }
+
+  render();
+  saveData();
+}
+
+// ❌ Eliminar
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  render();
+  saveData();
+}
+
+// 🧹 Limpiar todo
+function clearAll() {
+  tasks = [];
+  points = 0;
+  streak = 0;
+
+  render();
+  saveData();
+}
+
+// 💾 Guardar todo
+function saveData() {
+  localStorage.setItem("tasksGame", JSON.stringify(tasks));
+  localStorage.setItem("points", points);
+  localStorage.setItem("streak", streak);
+}
+
+// 📂 Cargar datos
+function loadData() {
+  let savedTasks = localStorage.getItem("tasksGame");
+  let savedPoints = localStorage.getItem("points");
+  let savedStreak = localStorage.getItem("streak");
+
+  if (savedTasks) tasks = JSON.parse(savedTasks);
+  if (savedPoints) points = Number(savedPoints);
+  if (savedStreak) streak = Number(savedStreak);
+
+  render();
+}
+
+</script>
+
+</body>
+</html>

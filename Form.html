@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Registro Mejorado</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* NAV */
+    nav {
+      background: #4a90e2;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s, transform 0.2s;
+      position: relative;
+    }
+
+    nav ul li a::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #ffeaa7;
+      transition: width 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffeaa7;
+      transform: scale(1.1);
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field { margin-bottom: 18px; }
+    label { font-weight: bold; }
+
+    input {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      border-color: #66a6ff;
+      box-shadow: 0 0 8px rgba(102,166,255,0.5);
+      outline: none;
+    }
+
+    input.valid { border-color: #4caf50; }
+    input.invalid { border-color: red; }
+
+    .error { color: red; margin: 0; font-size: 0.9em; }
+    .ok { color: green; margin: 0; font-size: 1em; font-weight: bold; }
+
+    button {
+      background: #66a6ff;
+      color: white;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.2s;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #4a90e2;
+      transform: scale(1.05);
+    }
+
+    #result {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 1.1em;
+    }
+
+    #result.ok { animation: pulse 0.6s ease; }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #strengthBar {
+      height: 8px;
+      border-radius: 5px;
+      background: #ccc;
+      margin-top: 5px;
+      transition: background 0.3s, width 0.3s;
+    }
+
+    #welcome {
+      text-align: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #2e7d32;
+      margin-top: 20px;
+      display: none;
+      animation: fadeIn 1s ease;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV mejorado -->
+<nav>
+  <ul>
+    <li><a href="index.html">Counter Básico</a></li>
+    <li><a href="Event.html">Event Listener</a></li>
+    <li><a href="To-do_list.html">Adventure Tasks</a></li>
+    <li><a href="Modal.html">Modal Popup</a></li>
+    <li><a href="Form.html">Form Validation</a></li>
+  </ul>
+</nav>
+
+<h1>🚀 Registro de Usuario</h1>
+
+<form id="signupForm">
+
+  <div class="field">
+    <label>Nombre:</label><br>
+    <input id="name" type="text" placeholder="Tu nombre">
+    <p id="nameError" class="error"></p>
+  </div>
+
+  <div class="field">
+    <label>Email:</label><br>
+    <input id="email" type="text" placeholder="nombre@ejemplo.com">
+    <p id="emailError" class="error"></p>
+  </div>
+
+  <div class="field">
+    <label>Contraseña:</label><br>
+    <input id="password" type="password" placeholder="Mínimo 8 caracteres">
+    <div id="strengthBar"></div>
+    <p id="passwordError" class="error"></p>
+    <button type="button" id="togglePass">👁️ Mostrar/Ocultar</button>
+  </div>
+
+  <div class="field">
+    <label>Confirmar Contraseña:</label><br>
+    <input id="confirm" type="password" placeholder="Repite la contraseña">
+    <p id="confirmError" class="error"></p>
+  </div>
+
+  <p><button type="submit">✨ Registrarse</button></p>
+
+</form>
+
+<p id="result"></p>
+<p id="welcome"></p>
+
+<script>
+const form = document.getElementById("signupForm");
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const passInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirm");
+const nameError = document.getElementById("nameError");
+const emailError = document.getElementById("emailError");
+const passError = document.getElementById("passwordError");
+const confirmError = document.getElementById("confirmError");
+const result = document.getElementById("result");
+const strengthBar = document.getElementById("strengthBar");
+const togglePass = document.getElementById("togglePass");
+const welcome = document.getElementById("welcome");
+
+// --- Funciones auxiliares ---
+function showError(el, message, input) {
+  el.textContent = message;
+  input.classList.add("invalid");
+  input.classList.remove("valid");
+}
+
+function showSuccess(el, input) {
+  el.textContent = "";
+  input.classList.add("valid");
+  input.classList.remove("invalid");
+}
+
+// --- Validaciones individuales ---
+function validateName() {
+  if (nameInput.value.trim() === "") {
+    showError(nameError, "⚠️ El nombre es obligatorio.", nameInput);
+    return false;
+  }
+  showSuccess(nameError, nameInput);
+  return true;
+}
+
+function validateEmail() {
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,}$/i;
+  if (!emailPattern.test(emailInput.value.trim())) {
+    showError(emailError, "⚠️ Ingresa un email válido.", emailInput);
+    return false;
+  }
+  showSuccess(emailError, emailInput);
+  return true;
+}
+
+function validatePassword() {
+  const pass = passInput.value;
+  const strongPass = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+  if (!strongPass.test(pass)) {
+    showError(passError, "⚠️ Debe tener 8+ caracteres, mayúscula, número y símbolo.", passInput);
+    return false;
+  }
+  showSuccess(passError, passInput);
+  return true;
+}
+
+function validateConfirm() {
+  if (confirmInput.value !== passInput.value || confirmInput.value === "") {
+    showError(confirmError, "⚠️ Las contraseñas no coinciden.", confirmInput);
+    return false;
+  }
+  showSuccess(confirmError, confirmInput);
+  return true;
+}
+
+// --- Validación general ---
+function validateForm() {
+  return validateName() && validateEmail() && validatePassword() && validateConfirm();
+}
+
+// --- Barra de fuerza de contraseña ---
+passInput.addEventListener("input", () => {
+  const val = passInput.value;
+  let strength = 0;
+  if (val.length >= 8) strength++;
+  if (/[A-Z]/.test(val)) strength++;
+  if (/[0-9]/.test(val)) strength++;
+  if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+  strengthBar.style.width = (strength * 25) + "%";
+  strengthBar.style.background = ["#ccc","#ff4d4d","#ffb84d","#66cc66","#4caf50"][strength];
+});
+
+// --- Mostrar/Ocultar contraseña ---
+togglePass.addEventListener("click", () => {
+  const type = passInput.type === "password" ? "text" : "password";
+  passInput.type = type;
+  confirmInput.type = type;
+});
+
+// --- Validaciones en tiempo real ---
+[nameInput, emailInput, passInput, confirmInput].forEach(input => {
+  input.addEventListener("input", validateForm);
+});
+
+// --- Manejar envío ---
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  result.innerHTML = "";
+
+  if (validateForm()) {
+    result.innerHTML = "✅ ¡Registro exitoso!";
+    result.className = "ok";
+
+    // Guardar datos en localStorage
+    localStorage.setItem("userData", JSON.stringify({
+      name: nameInput.value,
+      email: emailInput.value
+    }));
+
+    // Mostrar mensaje de bienvenida
+    welcome.textContent = `🎉 Bienvenido, ${nameInput.value}! Tu registro fue exitoso.`;
+    welcome.style.display = "block";
+
+    // Ocultar formulario tras éxito
+    form.style.display = "none";
+  } else {
+    result.innerHTML = "❌ Por favor corrige los errores.";
+    result.className = "error";
+  }
+});
+
+// Manejar envío
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  result.innerHTML = "";
+
+  if (validateForm()) {
+    result.innerHTML = "✅ ¡Registro exitoso!";
+    result.className = "ok";
+
+    // Guardar datos en localStorage (simulación)
+    localStorage.setItem("userData", JSON.stringify({
+      name: nameInput.value,
+      email: emailInput.value
+    }));
+
+    // Mostrar mensaje de bienvenida
+    welcome.textContent = `🎉 Bienvenido, ${nameInput.value}! Tu registro fue exitoso.`;
+    welcome.style.display = "block";
+
+    // 👉 Ya NO ocultamos el formulario
+    // form.style.display = "none";
+  } else {
+    result.innerHTML = "❌ Por favor corrige los errores.";
+    result.className = "error";
+  }
+});
+
+</script>
+
